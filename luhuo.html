@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>撸货管理系统 - 拍手端/管理员端</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+        
+        /* 登录页面样式 */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .login-box h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .login-box input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .login-box button:hover {
+            background: #5a67d8;
+        }
+        
+        .login-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .login-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.3s;
+        }
+        
+        .login-tab.active {
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            margin-bottom: -2px;
+        }
+        
+        /* 管理员端样式 */
+        .admin-container {
+            display: none;
+            min-height: 100vh;
+            background: #f0f2f5;
+        }
+        
+        .admin-header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .admin-header h1 {
+            font-size: 24px;
+        }
+        
+        .admin-header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .admin-header button {
+            padding: 8px 16px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .admin-nav {
+            background: white;
+            padding: 0 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 30px;
+        }
+        
+        .admin-nav-item {
+            padding: 15px 0;
+            cursor: pointer;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .admin-nav-item.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        
+        .admin-content {
+            padding: 30px;
+        }
+        
+        .admin-panel {
+            display: none;
+        }
+        
+        .admin-panel.active {
+            display: block;
+        }
+        
+        /* 拍手端样式 */
+        .paishou-container {
+            display: none;
+            min-height: 100vh;
+            background: #f8f9fa;
+        }
+        
+        .paishou-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .paishou-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .paishou-header p {
+            opacity: 0.9;
+        }
+        
+        .paishou-content {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .order-form {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .order-form h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .product-list {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .product-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 30px;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        
+        .product-item input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        
+        .remove-product {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .add-product {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn-submit:hover {
+            background: #5a67d8;
+        }
+        
+        .order-history {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .order-history h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .order-card {
+            border: 1px solid #eee;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: box-shadow 0.3s;
+        }
+        
+        .order-card:hover {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .order-id {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .order-status {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-pending {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .status-matched {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .status-partial {
+            background: #e67e22;
+            color: white;
+        }
+        
+        .order-detail {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .order-detail p {
+            margin: 5px 0;
+        }
+        
+        /* 管理员表格样式 */
+        .data-table {
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .data-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th {
+            background: #34495e;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 500;
+        }
+        
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .data-table tr:hover {
+            background: #f5f5f5;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .search-box button {
+            padding: 12px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .action-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+        
+        .btn-edit {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .btn-check {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .share-link {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .share-link input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .copy-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-content h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .close {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .close:hover {
+            color: #333;
+        }
+        
+        @media (max-width: 768px) {
+            .product-item {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-nav {
+                padding: 0 15px;
+                gap: 15px;
+                overflow-x: auto;
+            }
+            
+            .admin-nav-item {
+                padding: 10px 0;
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 登录页面 -->
+    <div class="login-container" id="loginPage">
+        <div class="login-box">
+            <h2>撸货管理系统</h2>
+            <div class="login-tabs">
+                <div class="login-tab active" onclick="switchLoginTab('paishou')">拍手登录</div>
+                <div class="login-tab" onclick="switchLoginTab('admin')">管理员登录</div>
+            </div>
+            
+            <!-- 拍手登录 -->
+            <div id="paishouLogin">
+                <input type="text" id="paishouName" placeholder="请输入您的姓名">
+                <input type="tel" id="paishouPhone" placeholder="请输入手机号">
+                <button onclick="paishouLogin()">进入拍手端</button>
+            </div>
+            
+            <!-- 管理员登录 -->
+            <div id="adminLogin" style="display: none;">
+                <input type="text" id="adminUsername" placeholder="管理员账号">
+                <input type="password" id="adminPassword" placeholder="密码">
+                <button onclick="adminLogin()">进入管理端</button>
+                <p style="text-align: center; margin-top: 15px; color: #999; font-size: 12px;">默认账号：admin 密码：admin123</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 拍手端 -->
+    <div class="paishou-container" id="paishouPage">
+        <div class="paishou-header">
+            <h1>撸货拍手端</h1>
+            <p id="paishouWelcome">欢迎您，</p>
+        </div>
+        
+        <div class="paishou-content">
+            <div class="stats-card">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalOrdersCount">0</div>
+                    <div class="stat-label">总报单数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="pendingOrdersCount">0</div>
+                    <div class="stat-label">待核对</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="completedOrdersCount">0</div>
+                    <div class="stat-label">已结账</div>
+                </div>
+            </div>
+            
+            <div class="order-form">
+                <h2>新建报单</h2>
+                <div class="form-group">
+                    <label>下单人 *</label>
+                    <input type="text" id="orderName" placeholder="请输入您的姓名" value="">
+                </div>
+                
+                <div class="form-group">
+                    <label>快递单号 *</label>
+                    <input type="text" id="trackingNumber" placeholder="请输入快递单号">
+                </div>
+                
+                <div class="form-group">
+                    <label>产品信息</label>
+                    <div id="productList" class="product-list">
+                        <!-- 产品列表动态生成 -->
+                    </div>
+                    <button class="add-product" onclick="addProductField()">+ 添加产品</button>
+                </div>
+                
+                <div class="form-group">
+                    <label>总金额 *</label>
+                    <input type="number" id="totalAmount" placeholder="请输入总金额" step="0.01" min="0">
+                </div>
+                
+                <button class="btn-submit" onclick="submitOrder()">提交报单</button>
+            </div>
+            
+            <div class="order-history">
+                <h2>我的报单记录</h2>
+                <div id="paishouOrderList"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 管理员端 -->
+    <div class="admin-container" id="adminPage">
+        <div class="admin-header">
+            <h1>撸货管理端</h1>
+            <div class="user-info">
+                <span>管理员：<span id="adminName">admin</span></span>
+                <button onclick="logout()">退出登录</button>
+            </div>
+        </div>
+        
+        <div class="admin-nav">
+            <div class="admin-nav-item active" onclick="switchAdminPanel('orders')">报单管理</div>
+            <div class="admin-nav-item" onclick="switchAdminPanel('inbound')">入库管理</div>
+            <div class="admin-nav-item" onclick="switchAdminPanel('check')">核对结账</div>
+            <div class="admin-nav-item" onclick="switchAdminPanel('paishou')">拍手管理</div>
+            <div class="admin-nav-item" onclick="switchAdminPanel('share')">分享链接</div>
+        </div>
+        
+        <div class="admin-content">
+            <!-- 报单管理面板 -->
+            <div class="admin-panel active" id="ordersPanel">
+                <h2 style="margin-bottom: 20px;">报单管理</h2>
+                <div class="search-box">
+                    <input type="text" id="orderSearch" placeholder="搜索报单号、下单人、电话、快递单号...">
+                    <button onclick="searchOrders()">搜索</button>
+                </div>
+                
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>报单号</th>
+                                <th>下单人</th>
+                                <th>电话</th>
+                                <th>快递单号</th>
+                                <th>产品信息</th>
+                                <th>总金额</th>
+                                <th>报单时间</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminOrderList"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 入库管理面板 -->
+            <div class="admin-panel" id="inboundPanel">
+                <h2 style="margin-bottom: 20px;">入库管理</h2>
+                <button class="add-product" onclick="showAddInboundModal()" style="margin-bottom: 20px;">+ 新建入库</button>
+                
+                <div class="search-box">
+                    <input type="text" id="inboundSearch" placeholder="搜索入库单号、快递单号、报单号...">
+                    <button onclick="searchInbound()">搜索</button>
+                </div>
+                
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>入库单号</th>
+                                <th>快递单号</th>
+                                <th>关联报单</th>
+                                <th>产品信息</th>
+                                <th>入库时间</th>
+                                <th>操作人</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inboundList"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 核对结账面板 -->
+            <div class="admin-panel" id="checkPanel">
+                <h2 style="margin-bottom: 20px;">核对结账</h2>
+                <div style="margin-bottom: 20px;">
+                    <button class="add-product" onclick="autoMatchAll()">自动匹配</button>
+                </div>
+                
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>报单号</th>
+                                <th>下单人</th>
+                                <th>电话</th>
+                                <th>报单金额</th>
+                                <th>已入库金额</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="checkList"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 拍手管理面板 -->
+            <div class="admin-panel" id="paishouPanel">
+                <h2 style="margin-bottom: 20px;">拍手管理</h2>
+                
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>拍手姓名</th>
+                                <th>电话</th>
+                                <th>总报单数</th>
+                                <th>总金额</th>
+                                <th>待结账</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paishouList"></tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- 分享链接面板 -->
+            <div class="admin-panel" id="sharePanel">
+                <h2 style="margin-bottom: 20px;">分享报单链接</h2>
+                
+                <div class="share-link">
+                    <input type="text" id="shareUrl" readonly value="请先复制当前页面地址">
+                    <button class="copy-btn" onclick="copyShareLink()">复制链接</button>
+                </div>
+                
+                <p style="color: #666; margin-top: 10px;">将以上链接发送给拍手，拍手打开后即可自助报单</p>
+                
+                <div style="margin-top: 30px;">
+                    <h3>使用说明</h3>
+                    <ul style="margin-top: 10px; color: #666; line-height: 1.8;">
+                        <li>拍手打开链接后，输入姓名和手机号即可登录</li>
+                        <li>登录后可查看自己的报单记录和状态</li>
+                        <li>每次报单只需填写：下单人、快递单号、产品信息、总金额</li>
+                        <li>管理员可在后台查看所有报单并进行入库核对</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 入库模态框 -->
+    <div class="modal" id="inboundModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('inboundModal')">&times;</span>
+            <h3>添加入库</h3>
+            
+            <div class="form-group">
+                <label>快递单号 *</label>
+                <input type="text" id="inboundTracking" placeholder="请输入快递单号">
+            </div>
+            
+            <div class="form-group">
+                <label>关联报单号</label>
+                <input type="text" id="inboundOrderId" placeholder="请输入报单号（可选）">
+            </div>
+            
+            <div class="form-group">
+                <label>产品信息</label>
+                <div id="inboundProductList" class="product-list"></div>
+                <button class="add-product" onclick="addInboundProduct()">+ 添加产品</button>
+            </div>
+            
+            <div class="form-group">
+                <label>操作人</label>
+                <input type="text" id="inboundOperator" placeholder="请输入操作人姓名">
+            </div>
+            
+            <button class="btn-submit" onclick="saveInbound()">保存入库</button>
+        </div>
+    </div>
+    
+    <!-- 详情模态框 -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('detailModal')">&times;</span>
+            <h3>详细信息</h3>
+            <div id="detailContent"></div>
+        </div>
+    </div>
+    
+    <script>
+        // 数据存储
+        let orders = JSON.parse(localStorage.getItem('orders')) || [];
+        let inbounds = JSON.parse(localStorage.getItem('inbounds')) || [];
+        let paishouUsers = JSON.parse(localStorage.getItem('paishouUsers')) || [];
+        
+        // 当前登录用户
+        let currentUser = null;
+        
+        // 初始化示例数据
+        if (orders.length === 0) {
+            orders.push({
+                id: 'BD20250220001',
+                paishouName: '张三',
+                paishouPhone: '13800138001',
+                trackingNumber: 'SF123456789',
+                products: [
+                    { name: 'iPhone 15', spec: '128G 黑色', quantity: 2 }
+                ],
+                totalAmount: 11998,
+                createTime: '2025-02-20 10:30',
+                status: 'pending'
+            });
+            
+            orders.push({
+                id: 'BD20250220002',
+                paishouName: '李四',
+                paishouPhone: '13800138002',
+                trackingNumber: 'YT987654321',
+                products: [
+                    { name: '华为Mate 60', spec: '12+512G', quantity: 1 }
+                ],
+                totalAmount: 6999,
+                createTime: '2025-02-20 11:15',
+                status: 'pending'
+            });
+            
+            saveOrders();
+        }
+        
+        if (inbounds.length === 0) {
+            inbounds.push({
+                id: 'RK20250220001',
+                trackingNumber: 'SF123456789',
+                orderId: 'BD20250220001',
+                products: [
+                    { name: 'iPhone 15', spec: '128G 黑色', quantity: 1 }
+                ],
+                operator: '仓库王',
+                createTime: '2025-02-20 15:30'
+            });
+            
+            saveInbounds();
+        }
+        
+        // 保存数据
+        function saveOrders() {
+            localStorage.setItem('orders', JSON.stringify(orders));
+        }
+        
+        function saveInbounds() {
+            localStorage.setItem('inbounds', JSON.stringify(inbounds));
+        }
+        
+        function savePaishouUsers() {
+            localStorage.setItem('paishouUsers', JSON.stringify(paishouUsers));
+        }
+        
+        // 生成唯一ID
+        function generateId(prefix) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            return `${prefix}${year}${month}${day}${random}`;
+        }
+        
+        // 获取当前时间
+        function getCurrentTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hour = String(now.getHours()).padStart(2, '0');
+            const minute = String(now.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hour}:${minute}`;
+        }
+        
+        // 登录相关
+        function switchLoginTab(type) {
+            document.querySelectorAll('.login-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            if (type === 'paishou') {
+                document.getElementById('paishouLogin').style.display = 'block';
+                document.getElementById('adminLogin').style.display = 'none';
+            } else {
+                document.getElementById('paishouLogin').style.display = 'none';
+                document.getElementById('adminLogin').style.display = 'block';
+            }
+        }
+        
+        function paishouLogin() {
+            const name = document.getElementById('paishouName').value.trim();
+            const phone = document.getElementById('paishouPhone').value.trim();
+            
+            if (!name || !phone) {
+                alert('请输入姓名和手机号');
+                return;
+            }
+            
+            // 检查是否已存在该拍手
+            let user = paishouUsers.find(u => u.name === name && u.phone === phone);
+            if (!user) {
+                user = {
+                    id: generateId('PS'),
+                    name: name,
+                    phone: phone,
+                    registerTime: getCurrentTime()
+                };
+                paishouUsers.push(user);
+                savePaishouUsers();
+            }
+            
+            currentUser = user;
+            
+            // 显示拍手端
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('paishouPage').style.display = 'block';
+            document.getElementById('paishouWelcome').textContent = `欢迎您，${name}`;
+            document.getElementById('orderName').value = name;
+            
+            loadPaishouOrders();
+        }
+        
+        function adminLogin() {
+            const username = document.getElementById('adminUsername').value.trim();
+            const password = document.getElementById('adminPassword').value.trim();
+            
+            if (username === 'admin' && password === 'admin123') {
+                currentUser = { name: 'admin', role: 'admin' };
+                
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('adminPage').style.display = 'block';
+                document.getElementById('adminName').textContent = 'admin';
+                
+                loadAdminOrders();
+                loadInboundList();
+                loadCheckList();
+                loadPaishouList();
+                
+                // 设置分享链接
+                const shareUrl = window.location.href;
+                document.getElementById('shareUrl').value = shareUrl;
+            } else {
+                alert('账号或密码错误');
+            }
+        }
+        
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginPage').style.display = 'flex';
+            document.getElementById('paishouPage').style.display = 'none';
+            document.getElementById('adminPage').style.display = 'none';
+        }
+        
+        // 拍手端功能
+        function addProductField() {
+            const productList = document.getElementById('productList');
+            const newField = document.createElement('div');
+            newField.className = 'product-item';
+            newField.innerHTML = `
+                <input type="text" placeholder="产品名称" class="product-name">
+                <input type="text" placeholder="口味/规格" class="product-spec">
+                <input type="number" placeholder="数量" class="product-quantity" value="1" min="1">
+                <input type="text" placeholder="固反" class="product-gufan">
+                <button class="remove-product" onclick="removeProductField(this)">×</button>
+            `;
+            productList.appendChild(newField);
+        }
+        
+        function removeProductField(btn) {
+            if (document.querySelectorAll('#productList .product-item').length > 1) {
+                btn.parentElement.remove();
+            }
+        }
+        
+        function submitOrder() {
+            const name = document.getElementById('orderName').value.trim();
+            const trackingNumber = document.getElementById('trackingNumber').value.trim();
+            const totalAmount = parseFloat(document.getElementById('totalAmount').value);
+            
+            if (!name || !trackingNumber || !totalAmount || totalAmount <= 0) {
+                alert('请填写完整信息');
+                return;
+            }
+            
+            const productItems = document.querySelectorAll('#productList .product-item');
+            const products = [];
+            
+            for (let item of productItems) {
+                const productName = item.querySelector('.product-name').value.trim();
+                const spec = item.querySelector('.product-spec').value.trim();
+                const quantity = parseInt(item.querySelector('.product-quantity').value) || 0;
+                const gufan = item.querySelector('.product-gufan').value.trim();
+                
+                if (productName && quantity > 0) {
+                    products.push({
+                        name: productName,
+                        spec: spec,
+                        quantity: quantity,
+                        gufan: gufan
+                    });
+                }
+            }
+            
+            if (products.length === 0) {
+                alert('请至少添加一个产品');
+                return;
+            }
+            
+            const newOrder = {
+                id: generateId('BD'),
+                paishouName: name,
+                paishouPhone: currentUser.phone,
+                trackingNumber: trackingNumber,
+                products: products,
+                totalAmount: totalAmount,
+                createTime: getCurrentTime(),
+                status: 'pending'
+            };
+            
+            orders.push(newOrder);
+            saveOrders();
+            
+            // 清空表单
+            document.getElementById('trackingNumber').value = '';
+            document.getElementById('totalAmount').value = '';
+            document.getElementById('productList').innerHTML = `
+                <div class="product-item">
+                    <input type="text" placeholder="产品名称" class="product-name">
+                    <input type="text" placeholder="口味/规格" class="product-spec">
+                    <input type="number" placeholder="数量" class="product-quantity" value="1" min="1">
+                    <input type="text" placeholder="固反" class="product-gufan">
+                    <button class="remove-product" onclick="removeProductField(this)">×</button>
+                </div>
+            `;
+            
+            loadPaishouOrders();
+            alert('报单提交成功！');
+        }
+        
+        function loadPaishouOrders() {
+            const userOrders = orders.filter(o => o.paishouPhone === currentUser.phone);
+            
+            // 更新统计
+            document.getElementById('totalOrdersCount').textContent = userOrders.length;
+            document.getElementById('pendingOrdersCount').textContent = userOrders.filter(o => o.status !== 'matched').length;
+            document.getElementById('completedOrdersCount').textContent = userOrders.filter(o => o.status === 'matched').length;
+            
+            const orderList = document.getElementById('paishouOrderList');
+            
+            if (userOrders.length === 0) {
+                orderList.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">暂无报单记录</p>';
+                return;
+            }
+            
+            let html = '';
+            userOrders.sort((a, b) => b.createTime.localeCompare(a.createTime)).forEach(order => {
+                const productInfo = order.products.map(p => 
+                    `${p.name} ${p.spec} x${p.quantity} ${p.gufan ? '(固反:' + p.gufan + ')' : ''}`
+                ).join('<br>');
+                
+                const statusText = order.status === 'pending' ? '待核对' : 
+                                  order.status === 'matched' ? '已结账' : '部分核对';
+                const statusClass = order.status === 'pending' ? 'status-pending' : 
+                                   order.status === 'matched' ? 'status-matched' : 'status-partial';
+                
+                html += `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <span class="order-id">${order.id}</span>
+                            <span class="order-status ${statusClass}">${statusText}</span>
+                        </div>
+                        <div class="order-detail">
+                            <p>📦 快递单号：${order.trackingNumber}</p>
+                            <p>📦 产品信息：</p>
+                            <p style="margin-left: 20px;">${productInfo}</p>
+                            <p>💰 总金额：¥${order.totalAmount.toFixed(2)}</p>
+                            <p>⏰ 报单时间：${order.createTime}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            orderList.innerHTML = html;
+        }
+        
+        // 管理员端功能
+        function switchAdminPanel(panel) {
+            document.querySelectorAll('.admin-nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelectorAll('.admin-panel').forEach(p => {
+                p.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+            document.getElementById(panel + 'Panel').classList.add('active');
+            
+            // 刷新对应面板数据
+            if (panel === 'orders') loadAdminOrders();
+            else if (panel === 'inbound') loadInboundList();
+            else if (panel === 'check') loadCheckList();
+            else if (panel === 'paishou') loadPaishouList();
+        }
+        
+        function loadAdminOrders() {
+            const tbody = document.getElementById('adminOrderList');
+            
+            if (orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 30px;">暂无报单数据</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            orders.sort((a, b) => b.createTime.localeCompare(a.createTime)).forEach(order => {
+                const productInfo = order.products.map(p => 
+                    `${p.name} ${p.spec} x${p.quantity}`
+                ).join('<br>');
+                
+                const statusText = order.status === 'pending' ? '待核对' : 
+                                  order.status === 'matched' ? '已结账' : '部分核对';
+                const statusClass = order.status === 'pending' ? 'status-pending' : 
+                                   order.status === 'matched' ? 'status-matched' : 'status-partial';
+                
+                html += `<tr>
+                    <td>${order.id}</td>
+                    <td>${order.paishouName}</td>
+                    <td>${order.paishouPhone}</td>
+                    <td>${order.trackingNumber}</td>
+                    <td>${productInfo}</td>
+                    <td>¥${order.totalAmount.toFixed(2)}</td>
+                    <td>${order.createTime}</td>
+                    <td><span class="order-status ${statusClass}">${statusText}</span></td>
+                    <td>
+                        <button class="action-btn btn-check" onclick="viewOrderDetail('${order.id}')">查看</button>
+                        <button class="action-btn btn-delete" onclick="deleteOrder('${order.id}')">删除</button>
+                    </td>
+                </tr>`;
+            });
+            
+            tbody.innerHTML = html;
+        }
+        
+        function searchOrders() {
+            const keyword = document.getElementById('orderSearch').value.toLowerCase();
+            
+            const filtered = orders.filter(order => 
+                order.id.toLowerCase().includes(keyword) ||
+                order.paishouName.toLowerCase().includes(keyword) ||
+                order.paishouPhone.includes(keyword) ||
+                order.trackingNumber.toLowerCase().includes(keyword)
+            );
+            
+            const tbody = document.getElementById('adminOrderList');
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 30px;">未找到匹配记录</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            filtered.forEach(order => {
+                const productInfo = order.products.map(p => 
+                    `${p.name} ${p.spec} x${p.quantity}`
+                ).join('<br>');
+                
+                const statusText = order.status === 'pending' ? '待核对' : 
+                                  order.status === 'matched' ? '已结账' : '部分核对';
+                const statusClass = order.status === 'pending' ? 'status-pending' : 
+                                   order.status === 'matched' ? 'status-matched' : 'status-partial';
+                
+                html += `<tr>
+                    <td>${order.id}</td>
+                    <td>${order.paishouName}</td>
+                    <td>${order.paishouPhone}</td>
+                    <td>${order.trackingNumber}</td>
+                    <td>${productInfo}</td>
+                    <td>¥${order.totalAmount.toFixed(2)}</td>
+                    <td>${order.createTime}</td>
+                    <td><span class="order-status ${statusClass}">${statusText}</span></td>
+                    <td>
+                        <button class="action-btn btn-check" onclick="viewOrderDetail('${order.id}')">查看</button>
+                        <button class="action-btn btn-delete" onclick="deleteOrder('${order.id}')">删除</button>
+                    </td>
+                </tr>`;
+            });
+            
+            tbody.innerHTML = html;
+        }
+        
+        function deleteOrder(orderId) {
+            if (confirm('确定要删除该报单吗？')) {
+                orders = orders.filter(o => o.id !== orderId);
+                saveOrders();
+                loadAdminOrders();
+                loadCheckList();
+            }
+        }
+        
+        function viewOrderDetail(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            const relatedInbounds = inbounds.filter(i => i.orderId === orderId);
+            
+            let inboundHtml = '';
+            if (relatedInbounds.length > 0) {
+                inboundHtml = '<h4 style="margin: 15px 0 10px;">关联入库：</h4>';
+                relatedInbounds.forEach(inb => {
+                    inboundHtml += `
+                        <div style="border: 1px solid #eee; padding: 10px; margin-bottom: 10px; border-radius: 5px;">
+                            <p>入库单号：${inb.id}</p>
+                            <p>快递单号：${inb.trackingNumber}</p>
+                            <p>产品：${inb.products.map(p => `${p.name} ${p.spec} x${p.quantity}`).join(', ')}</p>
+                            <p>入库时间：${inb.createTime}</p>
+                        </div>
+                    `;
+                });
+            } else {
+                inboundHtml = '<p style="color: #999; margin: 15px 0;">暂无入库记录</p>';
+            }
+            
+            const productHtml = order.products.map(p => 
+                `<p>• ${p.name} ${p.spec} ×${p.quantity} ${p.gufan ? '(固反:' + p.gufan + ')' : ''}</p>`
+            ).join('');
+            
+            document.getElementById('detailContent').innerHTML = `
+                <p><strong>报单号：</strong>${order.id}</p>
+                <p><strong>下单人：</strong>${order.paishouName} ${order.paishouPhone}</p>
+                <p><strong>快递单号：</strong>${order.trackingNumber}</p>
+                <p><strong>产品明细：</strong></p>
+                ${productHtml}
+                <p><strong>总金额：</strong>¥${order.totalAmount.toFixed(2)}</p>
+                <p><strong>报单时间：</strong>${order.createTime}</p>
+                <p><strong>状态：</strong>${order.status === 'pending' ? '待核对' : order.status === 'matched' ? '已结账' : '部分核对'}</p>
+                ${inboundHtml}
+            `;
+            
+            document.getElementById('detailModal').classList.add('active');
+        }
+        
+        // 入库管理
+        function loadInboundList() {
+            const tbody = document.getElementById('inboundList');
+            
+            if (inbounds.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px;">暂无入库数据</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            inbounds.sort((a, b) => b.createTime.localeCompare(a.createTime)).forEach(inb => {
+                const productInfo = inb.products.map(p => `${p.name} ${p.spec} x${p.quantity}`).join('<br>');
+                
+                html += `<tr>
+                    <td>${inb.id}</td>
+                    <td>${inb.trackingNumber}</td>
+                    <td>${inb.orderId || '未关联'}</td>
+                    <td>${productInfo}</td>
+                    <td>${inb.createTime}</td>
+                    <td>${inb.operator || '未知'}</td>
+                    <td>
+                        <button class="action-btn btn-check" onclick="viewInboundDetail('${inb.id}')">查看</button>
+                        <button class="action-btn btn-delete" onclick="deleteInbound('${inb.id}')">删除</button>
+                    </td>
+                </tr>`;
+            });
+            
+            tbody.innerHTML = html;
+        }
+        
+        function searchInbound() {
+            const keyword = document.getElementById('inboundSearch').value.toLowerCase();
+            
+            const filtered = inbounds.filter(inb => 
+                inb.id.toLowerCase().includes(keyword) ||
+                inb.trackingNumber.toLowerCase().includes(keyword) ||
+                (inb.orderId && inb.orderId.toLowerCase().includes(keyword))
+            );
+            
+            const tbody = document.getElementById('inboundList');
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px;">未找到匹配记录</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            filtered.forEach(inb => {
+                const productInfo = inb.products.map(p => `${p.name} ${p.spec} x${p.quantity}`).join('<br>');
+                
+                html += `<tr>
+                    <td>${inb.id}</td>
+                    <td>${inb.trackingNumber}</td>
+                    <td>${inb.orderId || '未关联'}</td>
+                    <td>${productInfo}</td>
+                    <td>${inb.createTime}</td>
+                    <td>${inb.operator || '未知'}</td>
+                    <td>
+                        <button class="action-btn btn-check" onclick="viewInboundDetail('${inb.id}')">查看</button>
+                        <button class="action-btn btn-delete" onclick="deleteInbound('${inb.id}')">删除</button>
+                    </td>
+                </tr>`;
+            });
+            
+            tbody.innerHTML = html;
+        }
+        
+        function showAddInboundModal() {
+            document.getElementById('inboundTracking').value = '';
+            document.getElementById('inboundOrderId').value = '';
+            document.getElementById('inboundOperator').value = '';
+            document.getElementById('inboundProductList').innerHTML = `
+                <div class="product-item">
+                    <input type="text" placeholder="产品名称" class="inbound-product-name">
+                    <input type="text" placeholder="规格" class="inbound-product-spec">
+                    <input type="number" placeholder="数量" class="inbound-product-quantity" value="1" min="1">
+                    <button class="remove-product" onclick="removeInboundProduct(this)">×</button>
+                </div>
+            `;
+            document.getElementById('inboundModal').classList.add('active');
+        }
+        
+        function addInboundProduct() {
+            const productList = document.getElementById('inboundProductList');
+            const newField = document.createElement('div');
+            newField.className = 'product-item';
+            newField.innerHTML = `
+                <input type="text" placeholder="产品名称" class="inbound-product-name">
+                <input type="text" placeholder="规格" class="inbound-product-spec">
+                <input type="number" placeholder="数量" class="inbound-product-quantity" value="1" min="1">
+                <button class="remove-product" onclick="removeInboundProduct(this)">×</button>
+            `;
+            productList.appendChild(newField);
+        }
+        
+        function removeInboundProduct(btn) {
+            if (document.querySelectorAll('#inboundProductList .product-item').length > 1) {
+                btn.parentElement.remove();
+            }
+        }
+        
+        function saveInbound() {
+            const trackingNumber = document.getElementById('inboundTracking').value.trim();
+            const orderId = document.getElementById('inboundOrderId').value.trim();
+            const operator = document.getElementById('inboundOperator').value.trim() || '管理员';
+            
+            if (!trackingNumber) {
+                alert('请输入快递单号');
+                return;
+            }
+            
+            const productItems = document.querySelectorAll('#inboundProductList .product-item');
+            const products = [];
+            
+            for (let item of productItems) {
+                const name = item.querySelector('.inbound-product-name').value.trim();
+                const spec = item.querySelector('.inbound-product-spec').value.trim();
+                const quantity = parseInt(item.querySelector('.inbound-product-quantity').value) || 0;
+                
+                if (name && quantity > 0) {
+                    products.push({ name, spec, quantity });
+                }
+            }
+            
+            if (products.length === 0) {
+                alert('请至少添加一个产品');
+                return;
+            }
+            
+            const newInbound = {
+                id: generateId('RK'),
+                trackingNumber: trackingNumber,
+                orderId: orderId || null,
+                products: products,
+                operator: operator,
+                createTime: getCurrentTime()
+            };
+            
+            inbounds.push(newInbound);
+            saveInbounds();
+            
+            if (orderId) {
+                updateOrderStatus(orderId);
+            }
+            
+            closeModal('inboundModal');
+            loadInboundList();
+            loadCheckList();
+            alert('入库记录添加成功！');
+        }
+        
+        function viewInboundDetail(inboundId) {
+            const inbound = inbounds.find(i => i.id === inboundId);
+            if (!inbound) return;
+            
+            const productHtml = inbound.products.map(p => 
+                `<p>• ${p.name} ${p.spec} ×${p.quantity}</p>`
+            ).join('');
+            
+            document.getElementById('detailContent').innerHTML = `
+                <p><strong>入库单号：</strong>${inbound.id}</p>
+                <p><strong>快递单号：</strong>${inbound.trackingNumber}</p>
+                <p><strong>关联报单：</strong>${inbound.orderId || '未关联'}</p>
+                <p><strong>产品明细：</strong></p>
+                ${productHtml}
+                <p><strong>操作人：</strong>${inbound.operator}</p>
+                <p><strong>入库时间：</strong>${inbound.createTime}</p>
+            `;
+            
+            document.getElementById('detailModal').classList.add('active');
+        }
+        
+        function deleteInbound(inboundId) {
+            if (confirm('确定要删除该入库记录吗？')) {
+                const inbound = inbounds.find(i => i.id === inboundId);
+                inbounds = inbounds.filter(i => i.id !== inboundId);
+                saveInbounds();
+                
+                if (inbound && inbound.orderId) {
+                    updateOrderStatus(inbound.orderId);
+                }
+                
+                loadInboundList();
+                loadCheckList();
+            }
+        }
+        
+        // 核对功能
+        function loadCheckList() {
+            const tbody = document.getElementById('checkList');
+            
+            if (orders.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 30px;">暂无报单数据</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            orders.forEach(order => {
+                if (order.status === 'matched') return; // 已结账的不显示
+                
+                let inboundAmount = 0;
+                const relatedInbounds = inbounds.filter(i => i.orderId === order.id);
+                
+                // 简单计算：假设产品价格相等
+                const avgPrice = order.totalAmount / order.products.reduce((sum, p) => sum + p.quantity, 0);
+                
+                relatedInbounds.forEach(inb => {
+                    inb.products.forEach(p => {
+                        inboundAmount += avgPrice * p.quantity;
+                    });
+                });
+                
+                const statusText = order.status === 'pending' ? '待核对' : '部分核对';
+                const statusClass = order.status === 'pending' ? 'status-pending' : 'status-partial';
+                
+                html += `<tr>
+                    <td>${order.id}</td>
+                    <td>${order.paishouName}</td>
+                    <td>${order.paishouPhone}</td>
+                    <td>¥${order.totalAmount.toFixed(2)}</td>
+                    <td>¥${inboundAmount.toFixed(2)}</td>
+                    <td><span class="order-status ${statusClass}">${statusText}</span></td>
+                    <td>
+                        <button class="action-btn btn-check" onclick="checkOrder('${order.id}')">核对</button>
+                        <button class="action-btn btn-edit" onclick="settleOrder('${order.id}')" ${inboundAmount === 0 ? 'disabled' : ''}>结账</button>
+                    </td>
+                </tr>`;
+            });
+            
+            tbody.innerHTML = html || '<tr><td colspan="7" style="text-align: center; padding: 30px;">暂无待核对报单</td></tr>';
+        }
+        
+        function checkOrder(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            const relatedInbounds = inbounds.filter(i => i.orderId === orderId);
+            
+            let matchHtml = '';
+            let totalInbound = 0;
+            
+            order.products.forEach(p => {
+                let inboundQty = 0;
+                relatedInbounds.forEach(inb => {
+                    const match = inb.products.find(ip => ip.name === p.name && ip.spec === p.spec);
+                    if (match) inboundQty += match.quantity;
+                });
+                
+                const status = inboundQty >= p.quantity ? '✅ 已齐' : 
+                              inboundQty > 0 ? `⚠️ 部分 (${inboundQty}/${p.quantity})` : '❌ 未到';
+                totalInbound += inboundQty;
+                
+                matchHtml += `<p>• ${p.name} ${p.spec}：报单 ${p.quantity}，已入库 ${inboundQty} ${status}</p>`;
+            });
+            
+            document.getElementById('detailContent').innerHTML = `
+                <p><strong>报单号：</strong>${order.id}</p>
+                <p><strong>下单人：</strong>${order.paishouName} ${order.paishouPhone}</p>
+                <p><strong>快递单号：</strong>${order.trackingNumber}</p>
+                <p><strong>报单金额：</strong>¥${order.totalAmount.toFixed(2)}</p>
+                <hr>
+                <h4>核对明细：</h4>
+                ${matchHtml}
+                <hr>
+                <p><strong>入库记录：</strong>${relatedInbounds.length} 条</p>
+                <div style="margin-top: 20px; text-align: right;">
+                    <button class="btn-submit" onclick="settleOrder('${orderId}')" style="width: auto; padding: 10px 20px;" ${totalInbound === 0 ? 'disabled' : ''}>确认结账</button>
+                </div>
+            `;
+            
+            document.getElementById('detailModal').classList.add('active');
+        }
+        
+        function settleOrder(orderId) {
+            if (confirm('确认给拍手结账吗？')) {
+                const order = orders.find(o => o.id === orderId);
+                if (order) {
+                    order.status = 'matched';
+                    saveOrders();
+                    loadCheckList();
+                    loadAdminOrders();
+                    closeModal('detailModal');
+                    alert('结账完成！');
+                }
+            }
+        }
+        
+        function autoMatchAll() {
+            inbounds.forEach(inb => {
+                if (!inb.orderId) {
+                    // 通过快递单号匹配
+                    const matchedOrder = orders.find(o => o.trackingNumber === inb.trackingNumber);
+                    if (matchedOrder) {
+                        inb.orderId = matchedOrder.id;
+                    }
+                }
+            });
+            
+            saveInbounds();
+            
+            orders.forEach(order => updateOrderStatus(order.id));
+            
+            loadCheckList();
+            loadInboundList();
+            alert('自动匹配完成！');
+        }
+        
+        function updateOrderStatus(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (!order) return;
+            
+            const relatedInbounds = inbounds.filter(i => i.orderId === orderId);
+            let totalInboundQty = 0;
+            let totalOrderQty = 0;
+            
+            order.products.forEach(p => {
+                totalOrderQty += p.quantity;
+                relatedInbounds.forEach(inb => {
+                    const match = inb.products.find(ip => ip.name === p.name && ip.spec === p.spec);
+                    if (match) totalInboundQty += match.quantity;
+                });
+            });
+            
+            if (totalInboundQty >= totalOrderQty) {
+                order.status = 'matched';
+            } else if (totalInboundQty > 0) {
+                order.status = 'partial';
+            } else {
+                order.status = 'pending';
+            }
+            
+            saveOrders();
+        }
+        
+        // 拍手管理
+        function loadPaishouList() {
+            const tbody = document.getElementById('paishouList');
+            
+            if (paishouUsers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 30px;">暂无拍手数据</td></tr>';
+                return;
+            }
+            
+            let html = '';
+            paishouUsers.forEach(user => {
+                const userOrders = orders.filter(o => o.paishouPhone === user.phone);
+                const totalAmount = userOrders.reduce((sum, o) => sum + o.totalAmount, 0);
+                const pendingAmount = userOrders.filter(o => o.status !== 'matched')
+                    .reduce((sum, o) => sum + o.totalAmount, 0);
+                
+                html += `<tr>
+                    <td>${user.name}</td>
+                    <td>${user.phone}</td>
+                    <td>${userOrders.length}</td>
+                    <td>¥${totalAmount.toFixed(2)}</td>
+                    <td>¥${pendingAmount.toFixed(2)}</td>
+                    <td>
+                        <button class="action-btn btn-check" onclick="viewPaishouOrders('${user.phone}')">查看报单</button>
+                    </td>
+                </tr>`;
+            });
+            
+            tbody.innerHTML = html;
+        }
+        
+        function viewPaishouOrders(phone) {
+            const userOrders = orders.filter(o => o.paishouPhone === phone);
+            
+            let html = '<h4>报单列表：</h4>';
+            userOrders.forEach(order => {
+                html += `
+                    <div style="border: 1px solid #eee; padding: 10px; margin: 10px 0; border-radius: 5px;">
+                        <p>报单号：${order.id}</p>
+                        <p>金额：¥${order.totalAmount.toFixed(2)}</p>
+                        <p>状态：${order.status === 'pending' ? '待核对' : order.status === 'matched' ? '已结账' : '部分核对'}</p>
+                        <p>时间：${order.createTime}</p>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('detailContent').innerHTML = html;
+            document.getElementById('detailModal').classList.add('active');
+        }
+        
+        // 分享链接
+        function copyShareLink() {
+            const shareUrl = document.getElementById('shareUrl');
+            shareUrl.select();
+            document.execCommand('copy');
+            alert('链接已复制到剪贴板');
+        }
+        
+        // 通用功能
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+        
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+        
+        // 检查URL参数，直接进入拍手端
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paishou = urlParams.get('paishou');
+            
+            if (paishou === 'login') {
+                // 显示拍手登录
+                document.getElementById('loginPage').style.display = 'flex';
+            }
+            
+            // 初始化产品列表
+            const productList = document.getElementById('productList');
+            if (productList) {
+                productList.innerHTML = `
+                    <div class="product-item">
+                        <input type="text" placeholder="产品名称" class="product-name">
+                        <input type="text" placeholder="口味/规格" class="product-spec">
+                        <input type="number" placeholder="数量" class="product-quantity" value="1" min="1">
+                        <input type="text" placeholder="固反" class="product-gufan">
+                        <button class="remove-product" onclick="removeProductField(this)">×</button>
+                    </div>
+                `;
+            }
+        };
+    </script>
+</body>
+</html>
